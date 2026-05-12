@@ -4,9 +4,6 @@ from data.database import get_connection
 def create_pet(name, species, age, notes):
     """
     Guarda mascota.
-
-    Returns:
-        None
     """
 
     try:
@@ -21,22 +18,26 @@ def create_pet(name, species, age, notes):
                 notes
             ) VALUES (?, ?, ?, ?)
             """,
-            (name, species, age, notes)
+            (
+                name,
+                species,
+                age,
+                notes
+            )
         )
 
         connection.commit()
         connection.close()
 
+        return True, "Mascota registrada correctamente."
+
     except Exception as error:
-        raise RuntimeError(f"Error guardando mascota: {error}")
+        return False, f"Error guardando mascota: {error}"
 
 
 def fetch_all_pets():
     """
     Obtiene mascotas.
-
-    Returns:
-        list[dict]
     """
 
     try:
@@ -50,5 +51,5 @@ def fetch_all_pets():
 
         return [dict(row) for row in rows]
 
-    except Exception as error:
-        raise RuntimeError(f"Error obteniendo mascotas: {error}")
+    except Exception:
+        return []

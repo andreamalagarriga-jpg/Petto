@@ -17,11 +17,28 @@ def inject_brand_styles():
                 color: #1E2761;
             }
 
+            p, label {
+                color: #1A1A1A;
+            }
+
             .stButton button {
                 background-color: #F96167;
                 color: white;
+                border-radius: 10px;
                 border: none;
-                border-radius: 8px;
+                padding: 0.5rem 1rem;
+            }
+
+            .stButton button:hover {
+                background-color: #e14f55;
+                color: white;
+            }
+
+            [data-testid="stMetric"] {
+                background: white;
+                padding: 1rem;
+                border-radius: 12px;
+                border: 1px solid #f0f0f0;
             }
         </style>
         """,

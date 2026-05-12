@@ -34,8 +34,10 @@ def create_followup(
         connection.commit()
         connection.close()
 
+        return True, "Seguimiento guardado correctamente."
+
     except Exception as error:
-        raise RuntimeError(f"Error guardando seguimiento: {error}")
+        return False, f"Error guardando seguimiento: {error}"
 
 
 def fetch_all_followups():
@@ -54,5 +56,5 @@ def fetch_all_followups():
 
         return [dict(row) for row in rows]
 
-    except Exception as error:
-        raise RuntimeError(f"Error obteniendo seguimientos: {error}")
+    except Exception:
+        return []

@@ -1,0 +1,20 @@
+.block-container {
+    padding-top: 2rem;
+}
+
+h1 {
+    color: #1E2761;
+}
+
+.stButton button {
+    background: #F96167;
+    color: white;
+    border-radius: 10px;
+    border: none;
+}
+
+.stMetric {
+    background: #FAF7F2;
+    border-radius: 12px;
+    padding: 12px;
+}

@@ -17,14 +17,20 @@ def create_adopter(full_name, city, experience):
                 experience
             ) VALUES (?, ?, ?)
             """,
-            (full_name, city, experience)
+            (
+                full_name,
+                city,
+                experience
+            )
         )
 
         connection.commit()
         connection.close()
 
+        return True, "Adoptante registrado correctamente."
+
     except Exception as error:
-        raise RuntimeError(f"Error guardando adoptante: {error}")
+        return False, f"Error guardando adoptante: {error}"
 
 
 def fetch_all_adopters():
@@ -43,5 +49,5 @@ def fetch_all_adopters():
 
         return [dict(row) for row in rows]
 
-    except Exception as error:
-        raise RuntimeError(f"Error obteniendo adoptantes: {error}")
+    except Exception:
+        return []

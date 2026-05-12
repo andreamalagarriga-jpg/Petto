@@ -1,85 +1,42 @@
 import streamlit as st
-import pandas as pd
-from database import (
-    init_db,
-    add_pet,
-    add_adopter,
-    create_followup,
-    get_pets,
-    get_adopters,
-    get_followups,
-)
-from utils import risk_label
+
+from config import APP_TITLE, APP_DESCRIPTION
+from data.migrations import initialize_database
+from ui.dashboard_page import render_dashboard_page
+from ui.pets_page import render_pets_page
+from ui.adopters_page import render_adopters_page
+from ui.followups_page import render_followups_page
+from ui._brand import inject_brand_styles
 
 st.set_page_config(
-    page_title="Petto",
-    page_icon="🐾",
+    page_title=APP_TITLE,
     layout="wide"
 )
 
-init_db()
+initialize_database()
+inject_brand_styles()
 
-with open("styles.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+st.title(APP_TITLE)
+st.caption(APP_DESCRIPTION)
 
-st.title("Petto")
-st.caption("Seguimiento post-adopción para refugios y adoptantes")
-
-menu = st.sidebar.radio(
+page = st.sidebar.radio(
     "Navegación",
     [
         "Dashboard",
-        "Nueva Mascota",
-        "Nuevo Adoptante",
-        "Seguimiento",
+        "Mascotas",
+        "Adoptantes",
+        "Seguimientos",
     ]
 )
 
-if menu == "Dashboard":
-    st.subheader("Estado General")
+if page == "Dashboard":
+    render_dashboard_page()
 
-    pets = get_pets()
-    adopters = get_adopters()
-    followups = get_followups()
+elif page == "Mascotas":
+    render_pets_page()
 
-    c1, c2, c3 = st.columns(3)
+elif page == "Adoptantes":
+    render_adopters_page()
 
-    c1.metric("Mascotas", len(pets))
-    c2.metric("Adoptantes", len(adopters))
-    c3.metric("Seguimientos", len(followups))
-
-    st.divider()
-
-    st.subheader("Mascotas en seguimiento")
-
-    if len(pets) > 0:
-        df = pd.DataFrame(pets)
-        st.dataframe(df, use_container_width=True)
-    else:
-        st.info("Todavía no hay mascotas registradas.")
-
-    st.divider()
-
-    st.subheader("Riesgo de devolución")
-
-    if len(followups) > 0:
-        followup_df = pd.DataFrame(followups)
-        followup_df["risk"] = followup_df["adaptation_score"].apply(risk_label)
-        st.dataframe(followup_df, use_container_width=True)
-    else:
-        st.warning("No existen seguimientos todavía.")
-
-elif menu == "Nueva Mascota":
-    st.subheader("Registrar Mascota")
-
-    with st.form("pet_form"):
-        name = st.text_input("Nombre")
-        species = st.selectbox("Especie", ["Perro", "Gato"])
-        age = st.number_input("Edad", min_value=0, max_value=30)
-        notes = st.text_area("Notas")
-
-        submitted = st.form_submit_button("Guardar")
-
-        if submitted:
-            add_pet(name, species, age, notes)
-        st.dataframe(df, use_container_width=True)
+elif page == "Seguimientos":
+    render_followups_page()

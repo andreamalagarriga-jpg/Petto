@@ -6,17 +6,28 @@ from logic.validation_logic import validate_required_text
 
 def render_adopters_page():
     """
-    Renderiza adoptantes.
+    Renderiza página adoptantes.
     """
 
     st.subheader("Registrar Adoptante")
 
+    st.write(
+        "Crea perfiles claros para mejorar acompañamiento y seguimiento."
+    )
+
     with st.form("adopters_form"):
-        full_name = st.text_input("Nombre completo")
-        city = st.text_input("Ciudad")
+        full_name = st.text_input(
+            "Nombre completo",
+            help="Nombre de la persona responsable."
+        )
+
+        city = st.text_input(
+            "Ciudad",
+            help="Ciudad donde vivirá la mascota."
+        )
 
         experience = st.selectbox(
-            "Experiencia",
+            "Experiencia previa",
             [
                 "Primerizo",
                 "Intermedio",
@@ -24,22 +35,36 @@ def render_adopters_page():
             ]
         )
 
-        submitted = st.form_submit_button("Guardar")
+        submitted = st.form_submit_button("Guardar adoptante")
 
         if submitted:
-            valid, error = validate_required_text(
+            valid_name, error_name = validate_required_text(
                 full_name,
                 "Nombre"
             )
 
-            if not valid:
-                st.error(error)
-                return
-
-            create_adopter(
-                full_name,
+            valid_city, error_city = validate_required_text(
                 city,
-                experience
+                "Ciudad"
             )
 
-            st.success("Adoptante registrado")
+            if not valid_name:
+                st.error(error_name)
+                return
+
+            if not valid_city:
+                st.error(error_city)
+                return
+
+            with st.spinner("Guardando adoptante..."):
+                success, message = create_adopter(
+                    full_name,
+                    city,
+                    experience
+                )
+
+            if success:
+                st.success(message)
+                st.toast("Perfil creado correctamente.")
+            else:
+                st.error(message)
